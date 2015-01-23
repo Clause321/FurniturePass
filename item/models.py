@@ -1,8 +1,7 @@
-from django.db import models
-from user.models import MyUser
+from user.models import *
 
 class Item(models.Model):
-    owner = models.ForeignKey(MyUser)
+    '''owner = models.ForeignKey(MyUser)
     item_id = models.AutoField(primary_key=True, default=0)
     self_price = models.IntegerField()
     sell_time = models.DateTimeField()
@@ -13,13 +12,18 @@ class Item(models.Model):
     tag = models.ManyToManyField(Tag)
     #
     final_buyer = models.ForeignKey(MyUser, null=True)
-
+'''
+    pass
 
 class Tag(models.Model):
-    tag_id = models.AutoField(primary_key=True, default=0)
+    '''tag_id = models.AutoField(primary_key=True, default=0)
     tag_name = models.CharField(unique=True, max_length=20)
-
+    '''
+    pass
 
 class Category(models.Model):
+    '''
     catagory_id = models.AutoField(primary_key=True, default=0)
     catagory_name = models.CharField(max_length=40)
+    '''
+    pass
