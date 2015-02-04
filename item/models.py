@@ -10,7 +10,7 @@ class Item(models.Model):
     #buyer = models.ForeignKey('user.MyUser') <= cannot write like this because django cannot tell
     final_buyer = models.ForeignKey('user.MyUser', related_name='myBoughtItem')
     item_id = models.AutoField(primary_key=True, default=0)
-    self_price = models.IntegerField()
+    sell_price = models.IntegerField()
     sell_time = models.DateTimeField()
     #source denotes where the item bought from
     source = models.CharField(max_length=100)
