@@ -1,5 +1,5 @@
 from item.models import Item
-from rest_framework import serializer
+from rest_framework import serializers
 
 class ItemSerializer(serializers.ModelSerializer):
 

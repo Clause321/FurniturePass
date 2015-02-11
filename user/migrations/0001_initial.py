@@ -16,9 +16,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Expect',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
-                ('lower', models.DecimalField(max_digits=8, decimal_places=2)),
-                ('upper', models.DecimalField(max_digits=8, decimal_places=2)),
+                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
+                ('lower', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('upper', models.DecimalField(decimal_places=2, max_digits=8)),
                 ('category', models.ManyToManyField(to='item.Category')),
                 ('tag', models.ManyToManyField(to='item.Tag')),
             ],
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MyUser',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
             ],
             options={
             },
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RelatedItem',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
                 ('type', models.CharField(choices=[('WA', 'Watching'), ('BY', 'Buying'), ('BT', 'Bought')], max_length=2)),
                 ('item', models.ForeignKey(to='item.Item')),
                 ('user', models.ForeignKey(to='user.MyUser')),
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='myuser',
             name='item',
-            field=models.ManyToManyField(to='item.Item', through='user.RelatedItem'),
+            field=models.ManyToManyField(through='user.RelatedItem', to='item.Item'),
             preserve_default=True,
         ),
         migrations.AddField(

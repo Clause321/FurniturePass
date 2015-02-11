@@ -13,7 +13,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
+                ('catagory_name', models.CharField(null=True, max_length=40)),
             ],
             options={
             },
@@ -22,7 +23,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Item',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('item_id', models.AutoField(primary_key=True, default=0, serialize=False)),
+                ('sell_price', models.IntegerField(null=True)),
+                ('sell_time', models.DateTimeField(null=True)),
+                ('source', models.CharField(null=True, max_length=100)),
+                ('status', models.CharField(null=True, max_length=30)),
+                ('expire_time', models.DateTimeField(null=True)),
             ],
             options={
             },
@@ -31,7 +37,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
+                ('tag_name', models.CharField(null=True, unique=True, max_length=20)),
             ],
             options={
             },
