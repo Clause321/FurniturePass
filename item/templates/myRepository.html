@@ -1,17 +1,20 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html>
+<html ng-app="myRepoApp">
 <head lang="en">
     <meta charset="UTF-8">
-    <title>My Repository</title>
+    <title>My Repo</title>
 </head>
-<body ng-app="myRepoApp">
-    [[ 1 + 2 ]]
+<body ng-controller="repoController">
 
+    [[1 + 21]]
     <h1>Hi this is repo</h1>
 
+    <div ng-repeat="item in items">
+        <h1>[[item.sell_price]]</h1>
+    </div>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.min.js"></script>
-    <script type="text/javascript" src= "{{ STATIC_URL }}item/js/app.js"></script>
 
+    <script type="text/javascript" src="{{ STATIC_URL }}js/app.js"></script>
 </body>
 </html>
