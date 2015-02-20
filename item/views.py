@@ -13,5 +13,5 @@ class ItemsList(generics.ListAPIView):
         return Item.objects.filter(owner__pk=theid)
 # Create your views here.
 
-def repo_index(request):
+def repo_index(request, pk):
     return render(request, "myRepository.html")
