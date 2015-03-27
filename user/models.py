@@ -52,6 +52,16 @@ class Account(AbstractBaseUser):
     def get_short_name(self):
         return self.first_name
 
+    @property
+    def is_staff(self):
+        return self.is_admin
+
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+
+    def has_module_perms(self, app_label):
+        return self.is_admin
+
 # class Expect(models.Model):
 #     category = models.ManyToManyField(Category)
 #     lower = models.DecimalField(max_digits=8, decimal_places=2) # maximum == 999,999.99
