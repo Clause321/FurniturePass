@@ -9,8 +9,16 @@ class ItemsList(generics.ListAPIView):
 
     def get_queryset(self):
         theid = self.kwargs['pk']
-        print(theid)
         return Item.objects.filter(owner__pk=theid)
+
+class SingleItem(generics.ListAPIView):
+    model = Item
+    serializer_class = ItemSerializer
+
+    def get_queryset(self):
+        itemid = self.kwargs['pk']
+        return Item.objects.filter(id=itemid)
+
 # Create your views here.
 
 def repo_index(request, pk):

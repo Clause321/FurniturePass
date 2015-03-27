@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html ng-app="myRepoApp">
+<html>
 <head lang="en">
     <meta charset="UTF-8">
     <title>My Repo</title>
@@ -12,29 +12,22 @@
     <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.min.js"></script>
-    <!-- Include ui angular to do the pagination -->
-    <script src="{{ STATIC_URL }}js/ui-angular-min.js"></script>
-
-    <script type="text/javascript" src="{{ STATIC_URL }}js/app.js"></script>
+    <!-- React starter kit -->
+    <script src="https://fb.me/react-0.13.0.js"></script>
+    <script src="https://fb.me/JSXTransformer-0.13.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
+    <script src="{{ STATIC_URL }}js/react-bootstrap.min.js"></script>
 
 </head>
-<body ng-controller="repoController">
-    <h1>Hi this is repo</h1>
+<body>
+    <div id="buttons"></div>
+    <div id="content"></div>
 
-    <div id="items" class="row">
-        <div ng-repeat="item in filteredItems" class="col-sm-6 col-md-4">
-            <h3>[[item.item_name]]</h3>
-            <ul>
-                <li>[[item.sell_price]]</li>
-                <li></li>
-            </ul>
-        </div>
-    </div>
+    <script src="{{ STATIC_URL }}js/paginator.js" type="text/jsx">
+      // Your code here
 
-   <pagination ng-model="currentPage" items-per-page="itemsPerPage" max-size="maxSize" total-items="totalItems"></pagination>
-
+    </script>
 
 
 

@@ -16,6 +16,7 @@ class Category(models.Model):
 class Item(models.Model):
     item_name = models.CharField(max_length=40, null=True)
     owner = models.ForeignKey('user.MyUser', related_name='myItem', null=True)
+    owner_name = models.CharField(max_length=40, blank=True)
     #buyer = models.ForeignKey('user.MyUser') <= cannot write like this because django cannot tell
     final_buyer = models.ForeignKey('user.MyUser', related_name='myBoughtItem', null=True, blank=True)
     item_id = models.AutoField(primary_key=True)
