@@ -1,5 +1,5 @@
 from django.db import models
-import user
+from user.models import Account
 
 class Tag(models.Model):
     tag_name = models.CharField(unique=True, max_length=20, null=True)
@@ -15,10 +15,10 @@ class Category(models.Model):
 
 class Item(models.Model):
     item_name = models.CharField(max_length=40, null=True)
-    owner = models.ForeignKey('user.MyUser', related_name='myItem', null=True)
+    owner = models.ForeignKey(Account, related_name='myItem', null=True)
     owner_name = models.CharField(max_length=40, blank=True)
     #buyer = models.ForeignKey('user.MyUser') <= cannot write like this because django cannot tell
-    final_buyer = models.ForeignKey('user.MyUser', related_name='myBoughtItem', null=True, blank=True)
+    final_buyer = models.ForeignKey(Account, related_name='myBoughtItem', null=True, blank=True)
     item_id = models.AutoField(primary_key=True)
     sell_price = models.IntegerField(null=True, blank=True)
     sell_time = models.DateTimeField(null=True, blank=True)
