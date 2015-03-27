@@ -1,13 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractBaseUser, BaseUserManager
-# from item.models import Item, Tag, Category
-
-# class MyUser(models.Model):
-#     user = models.OneToOneField(User)
-#     item = models.ManyToManyField(Item, through='RelatedItem')
-#
-#     def __str__(self):
-#         return self.user.username
 
 class AccountManager(BaseUserManager):
     def create_user(self, username, password, **kwargs):
@@ -69,16 +61,3 @@ class Account(AbstractBaseUser):
 #
 #     def __str__(self):
 #         return '%s expects %s' % (self.user, self.category)
-
-# class RelatedItem(models.Model):
-#     WATCHING = 'WA'
-#     BUYING = 'BY'
-#     BOUGHT = 'BT'
-#     TYPE_CHOICES = (
-#         (WATCHING, 'Watching'),
-#         (BUYING, 'Buying'),
-#         (BOUGHT, 'Bought'),
-#     )
-#     user = models.ForeignKey(MyUser)
-#     item = models.ForeignKey(Item)
-#     type = models.CharField(max_length=2, choices=TYPE_CHOICES)
