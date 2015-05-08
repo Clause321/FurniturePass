@@ -22,4 +22,4 @@ class SingleItem(generics.ListAPIView):
 # Create your views here.
 
 def repo_index(request, pk):
-    return render(request, "myRepository.html")
+    return render(request, "item/myRepository.html")

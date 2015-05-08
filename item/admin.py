@@ -4,7 +4,7 @@ from item.models import *
 class TagAdmin(admin.ModelAdmin):
     list_display = ['tag_name']
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ['item_id', 'owner', 'item_name']
+    list_display = ['item_id', 'item_name', 'owner']
 
 # Register your models here.
 admin.site.register(Item, ItemAdmin)
