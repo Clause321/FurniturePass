@@ -3,6 +3,7 @@ from item.Serializer import ItemSerializer
 from item.models import Item
 from rest_framework import generics
 
+
 class ItemsList(generics.ListAPIView):
     model = Item
     serializer_class = ItemSerializer
@@ -10,6 +11,7 @@ class ItemsList(generics.ListAPIView):
     def get_queryset(self):
         theid = self.kwargs['pk']
         return Item.objects.filter(owner__pk=theid)
+
 
 class SingleItem(generics.ListAPIView):
     model = Item
@@ -21,5 +23,10 @@ class SingleItem(generics.ListAPIView):
 
 # Create your views here.
 
+
 def repo_index(request, pk):
     return render(request, "item/myRepository.html")
+
+
+def item_view(request):
+    return render(request, "item/oneItem.html")

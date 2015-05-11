@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+print(BASE_DIR)
 
 
 # Quick-start development settings - unsuitable for production
@@ -36,7 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djangobower',
+    'require',
     # my apps
     'rest_framework',
     'user',
@@ -46,7 +47,6 @@ INSTALLED_APPS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'djangobower.finders.BowerFinder',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -98,16 +98,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATIC_URL = '/static/'
 
-BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
-
-BOWER_INSTALLED_APPS = (
-    'jquery',
-    'bootstrap',
-    'react',
-    'react-bootstrap',
-    'react-paginate',
-    'requirejs'
-)
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),

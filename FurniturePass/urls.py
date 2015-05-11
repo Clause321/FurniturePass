@@ -13,5 +13,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/items/(?P<pk>\d+)$', ItemsList.as_view(), name='items-list'),
     url(r'^myreprocitory/(?P<pk>\d+)$', repo_index),
-    url(r'^myaccount$', my_account)
+    url(r'^myaccount$', my_account),
+    url(r'^oneItem$', item_view)
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
