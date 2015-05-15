@@ -19,7 +19,7 @@ class SingleItem(generics.ListAPIView):
 
     def get_queryset(self):
         itemid = self.kwargs['pk']
-        return Item.objects.filter(id=itemid)
+        return Item.objects.filter(item_id=itemid)
 
 # Create your views here.
 
@@ -28,5 +28,5 @@ def repo_index(request, pk):
     return render(request, "item/myRepository.html")
 
 
-def item_view(request):
+def item_view(request, pk):
     return render(request, "item/oneItem.html")

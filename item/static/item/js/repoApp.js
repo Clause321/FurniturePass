@@ -9,7 +9,6 @@ var Nav = ReactBootstrap.Nav;
 var NavItem = ReactBootstrap.NavItem;
 var DropdownButton = ReactBootstrap.DropdownButton;
 var MenuItem = ReactBootstrap.MenuItem;
-var CollapsibleNav = ReactBootstrap.CollapsibleNav;
 
 /*This is search bar module*/
 var SearchBar = React.createClass({
@@ -89,7 +88,7 @@ var ItemList = React.createClass({
         var itemNodes = this.props.data.map(function (item) {
             if (item.item_name.indexOf(keyword) != -1) {
                return (
-                    <Item item_name={item.item_name} price={item.sell_price} owner={item.owner.username} time={item.expire_time}>
+                    <Item item_id={item.item_id} item_name={item.item_name} price={item.sell_price} owner={item.owner.username} time={item.expire_time} >
                         {item.description}
                     </Item>
                 );
@@ -112,7 +111,7 @@ var Item = React.createClass({
                     <h5>
                         owner: {this.props.owner}
                     </h5>
-                    <p>
+                    <div className="container">
                         <ButtonToolbar>
                             <OverlayTrigger trigger="click" placement="right" overlay={
                                 <Popover title={this.props.item_name}>
@@ -128,7 +127,12 @@ var Item = React.createClass({
                                 <Button bsStyle="default">Show Detail</Button>
                             </OverlayTrigger>
                         </ButtonToolbar>
-                    </p>
+                        <ButtonToolbar>
+                            <a href={"/item/"+this.props.item_id}>
+                                <Button bsStyle="info">Check it out</Button>
+                            </a>
+                        </ButtonToolbar>
+                    </div>
                 </Panel>
             </div>
         );
@@ -160,7 +164,7 @@ var Repo = React.createClass({
 
 var temp = window.location.href.split("/");
 var repoId = temp[4]; //this index is hard code right now, because it is kind of difficult to use angular-route
-var repoAddress = "/api/items/" + repoId;
+var repoAddress = "/api/repo/" + repoId;
 
 React.render(
     <Repo goto={repoAddress}/>,

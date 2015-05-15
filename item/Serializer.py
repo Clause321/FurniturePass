@@ -7,7 +7,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        read_only_fields = ('owner_name',
+        read_only_fields = ('owner',
                             'item_name',
                             'description',
                             'sell_price',

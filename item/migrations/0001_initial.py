@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('catagory_name', models.CharField(max_length=40, null=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('catagory_name', models.CharField(null=True, max_length=40)),
             ],
             options={
             },
@@ -25,17 +25,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Item',
             fields=[
-                ('item_name', models.CharField(max_length=40, null=True)),
-                ('item_id', models.AutoField(serialize=False, primary_key=True)),
+                ('item_name', models.CharField(null=True, max_length=40)),
+                ('item_id', models.AutoField(primary_key=True, serialize=False)),
                 ('sell_price', models.IntegerField()),
-                ('sell_time', models.DateTimeField(null=True, blank=True)),
-                ('source', models.CharField(max_length=100, null=True, blank=True)),
-                ('status', models.CharField(default='on sale', max_length=30, null=True, blank=True)),
+                ('sell_time', models.DateTimeField(blank=True, null=True)),
+                ('source', models.CharField(blank=True, null=True, max_length=100)),
+                ('status', models.CharField(blank=True, default='on sale', null=True, max_length=30)),
                 ('expire_time', models.DateTimeField()),
                 ('description', models.TextField(null=True)),
-                ('catagory', models.ManyToManyField(to='item.Category', blank=True)),
-                ('final_buyer', models.ForeignKey(related_name='myBoughtItem', null=True, to=settings.AUTH_USER_MODEL, blank=True)),
-                ('owner', models.ForeignKey(related_name='myItem', null=True, to=settings.AUTH_USER_MODEL)),
+                ('catagory', models.ManyToManyField(blank=True, to='item.Category')),
+                ('final_buyer', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, related_name='myBoughtItem', blank=True)),
+                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, related_name='myItem')),
             ],
             options={
             },
@@ -44,17 +44,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('tag_name', models.CharField(max_length=20, unique=True, null=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('tag_name', models.CharField(unique=True, null=True, max_length=20)),
             ],
             options={
             },
             bases=(models.Model,),
         ),
         migrations.AddField(
-            model_name='static',
+            model_name='item',
             name='tag',
-            field=models.ManyToManyField(to='item.Tag', blank=True),
+            field=models.ManyToManyField(blank=True, to='item.Tag'),
             preserve_default=True,
         ),
     ]

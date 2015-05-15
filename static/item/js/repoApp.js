@@ -89,7 +89,7 @@ var ItemList = React.createClass({
         var itemNodes = this.props.data.map(function (item) {
             if (item.item_name.indexOf(keyword) != -1) {
                return (
-                    <Item item_name={item.item_name} price={item.sell_price} owner={item.owner_name} time={item.expire_time}>
+                    <Item item_name={item.item_name} price={item.sell_price} owner={item.owner.username} time={item.expire_time}>
                         {item.description}
                     </Item>
                 );
