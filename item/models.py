@@ -1,4 +1,5 @@
 from django.db import models
+from item.util import upload_helper
 import user
 
 class Tag(models.Model):
@@ -8,13 +9,13 @@ class Tag(models.Model):
         return self.tag_name
 
 class Category(models.Model):
-    catagory_name = models.CharField(max_length=40, null=True)
+    category_name = models.CharField(max_length=40, null=True)
 
     def __str__(self):
-        return self.catagory_name
+        return self.category_name
 
 class Item(models.Model):
-    item_name = models.CharField(max_length=40, null=True)
+    item_name = models.CharField(max_length=40, null=True, unique=True)
     owner = models.ForeignKey('user.Account', related_name='myItem', null=True)
     final_buyer = models.ForeignKey('user.Account', related_name='myBoughtItem', null=True, blank=True)
     item_id = models.AutoField(primary_key=True)
@@ -24,6 +25,15 @@ class Item(models.Model):
     status = models.CharField(max_length=30, null=True, blank=True, default="on sale")
     expire_time = models.DateTimeField()
     tag = models.ManyToManyField(Tag, blank=True)
-    catagory = models.ManyToManyField(Category, blank=True)
+    category = models.ManyToManyField(Category, blank=True)
     description = models.TextField(null=True)
+    """
+    image1 = models.ImageField(upload_to=upload_helper_function('photo'), null=True, blank=True)
+    image2 = models.ImageField(upload_to=upload_helper_function('photo'), null=True, blank=True)
+    image3 = models.ImageField(upload_to=upload_helper_function('photo'), null=True, blank=True)
+    """
+    image1 = models.ImageField(upload_to=upload_helper, null=True, blank=True)
+    image2 = models.ImageField(upload_to=upload_helper, null=True, blank=True)
+    image3 = models.ImageField(upload_to=upload_helper, null=True, blank=True)
+
 

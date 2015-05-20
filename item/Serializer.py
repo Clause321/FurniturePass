@@ -1,10 +1,6 @@
-from item.models import Item
+from item.models import Item, Category
 from rest_framework import serializers
-from rest_framework import pagination
-
-
 class ItemSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Item
         read_only_fields = ('owner',
@@ -16,3 +12,7 @@ class ItemSerializer(serializers.ModelSerializer):
                             'tag',
                             'expire_time')
 
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category

@@ -9,7 +9,55 @@ var Nav = ReactBootstrap.Nav;
 var NavItem = ReactBootstrap.NavItem;
 var DropdownButton = ReactBootstrap.DropdownButton;
 var MenuItem = ReactBootstrap.MenuItem;
-var CollapsibleNav = ReactBootstrap.CollapsibleNav;
+var Grid = ReactBootstrap.Grid;
+var Col = ReactBootstrap.Col;
+var Row = ReactBootstrap.Row;
+
+var Slider = React.createClass({
+    componentDidMount: function () {
+        console.log("componentDidMount() execute");
+        function init_slider() {
+        $("#slider")
+            .noUiSlider({
+            start: [0, 10000],
+            behaviour: 'drag-tap',
+            connect: true,
+            range: {
+                'min': 0,
+                'max': 10000
+            }
+        })
+            .change(function() {
+
+            });
+        }
+        function link() {
+            $("#slider").Link('lower').to($('#slider-lower')).Link('upper').to($('#slider-upper'));
+        }
+        init_slider();
+        link();
+        //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+    },
+    render: function() {
+        console.log("render execute");
+        return(
+            <Grid>
+                <Row>
+                    <Col xs={6}>
+                        <p>Min: <span id="slider-lower"></span></p>
+                    </Col>
+                    <Col xs={6}>
+                        <p>Max: <span id="slider-upper"></span></p>
+                    </Col>
+                    <br/>
+                    <Col xs={12}>
+                        <div id="slider"></div>
+                    </Col>
+                </Row>
+            </Grid>
+        );
+    }
+});
 
 /*This is search bar module*/
 var SearchBar = React.createClass({
@@ -33,10 +81,11 @@ var SearchBar = React.createClass({
         );
     }
 });
+
 var NavBarInstance = React.createClass({
     render: function () {
         return (
-            <Navbar brand='React-Bootstrap' className="navbar navbar-default navbar-static-top" role="navigation">
+            <Navbar brand='FurniturePass' className="navbar navbar-default navbar-static-top" role="navigation">
                 <Nav>
                   <NavItem eventKey={1} href='#'>Link</NavItem>
                   <NavItem eventKey={2} href='#'>Link</NavItem>
@@ -47,7 +96,8 @@ var NavBarInstance = React.createClass({
                     <MenuItem divider />
                     <MenuItem eventKey='4'>Separated link</MenuItem>
                   </DropdownButton>
-                    <SearchBar filterText={this.props.searchText} onUserInput={this.props.func}></SearchBar>
+                    <SearchBar filterText={this.props.searchText} onUserInput={this.props.func}>
+                    </SearchBar>
                 </Nav>
             </Navbar>
         );
@@ -86,10 +136,12 @@ var ItemBox = React.createClass({
 var ItemList = React.createClass({
     render: function () {
         var keyword = this.props.filterText;
+        var count = 0;
         var itemNodes = this.props.data.map(function (item) {
             if (item.item_name.indexOf(keyword) != -1) {
                return (
-                    <Item item_name={item.item_name} price={item.sell_price} owner={item.owner.username} time={item.expire_time}>
+                    <Item item_id={item.item_id} item_name={item.item_name} price={item.sell_price}
+                        owner={item.owner.username} time={item.expire_time} key={count++}>
                         {item.description}
                     </Item>
                 );
@@ -97,9 +149,11 @@ var ItemList = React.createClass({
         });
 
         return (
-            <div className="itemList">
+            <Grid>
+                <Row>
                 {itemNodes}
-            </div>
+                </Row>
+            </Grid>
         );
     }
 });
@@ -107,30 +161,37 @@ var ItemList = React.createClass({
 var Item = React.createClass({
     render: function () {
         return (
-            <div className="item">
-                <Panel header={this.props.item_name}>
-                    <h5>
-                        owner: {this.props.owner}
-                    </h5>
-                    <p>
-                        <ButtonToolbar>
-                            <OverlayTrigger trigger="click" placement="right" overlay={
-                                <Popover title={this.props.item_name}>
-                                    <div>
-                                        <h5>Owner: {this.props.owner}</h5>
-                                        <h5>price: ${this.props.price}</h5>
-                                        <h5>Expire Time: {this.props.time}</h5>
-                                        <p>
-                                            {this.props.children.toString()}
-                                        </p>
-                                    </div>
-                                </Popover>}>
-                                <Button bsStyle="default">Show Detail</Button>
-                            </OverlayTrigger>
-                        </ButtonToolbar>
-                    </p>
-                </Panel>
-            </div>
+            <Col xs={4}>
+                <div className="item">
+                    <Panel>
+                        <h4>{this.props.item_name}</h4>
+                        <h5>
+                            ${this.props.price}
+                        </h5>
+                        <div>
+                            <ButtonToolbar>
+                                <OverlayTrigger trigger="click" placement="right" overlay={
+                                    <Popover title={this.props.item_name}>
+                                        <div>
+                                            <h5>Owner: {this.props.owner}</h5>
+                                            <h5>price: ${this.props.price}</h5>
+                                            <h5>Expire Time: {this.props.time}</h5>
+                                            <p>
+                                                {this.props.children.toString()}
+                                            </p>
+                                        </div>
+                                    </Popover>}>
+                                    <Button bsStyle="default">Show Detail</Button>
+                                </OverlayTrigger>
+                                &nbsp;
+                                <a href={"/item/"+this.props.item_id}>
+                                    <Button bsStyle="info">Check it out</Button>
+                                </a>
+                            </ButtonToolbar>
+                        </div>
+                    </Panel>
+                </div>
+            </Col>
         );
     }
 });
@@ -151,6 +212,8 @@ var Repo = React.createClass({
             <div>
                 <NavBarInstance searchText={this.state.filterText} func={this.handleUserInput}></NavBarInstance>
                 <div className="container" >
+                    <Slider></Slider>
+                    <br/>
                     <ItemBox url={this.props.goto} filterText={this.state.filterText}></ItemBox>
                 </div>
             </div>
@@ -160,9 +223,12 @@ var Repo = React.createClass({
 
 var temp = window.location.href.split("/");
 var repoId = temp[4]; //this index is hard code right now, because it is kind of difficult to use angular-route
-var repoAddress = "/api/items/" + repoId;
+var repoAddress = "/api/repo/" + repoId;
 
 React.render(
     <Repo goto={repoAddress}/>,
     document.getElementById('content')
 );
+
+
+

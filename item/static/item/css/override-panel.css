@@ -1,0 +1,10 @@
+.panel {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.panel-default > .panel-heading {
+}
+
+.panel-body {
+}

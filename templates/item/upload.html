@@ -1,0 +1,16 @@
+{% extends "common/navbase.html" %}
+{% block title %}My Repository!{% endblock %}
+{% block content %}
+    {{ form.media }}
+    <nav id="navbar"></nav>
+    <div id="content">
+        <div class="container">
+            <form action="/user/upload" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                 <input type="submit" class="btn btn-info" value="Submit Button">
+            </form>
+        </div>
+    </div>
+    <script src="{{ STATIC_URL}}item/js/nav.js" type="text/jsx"></script>
+{% endblock %}

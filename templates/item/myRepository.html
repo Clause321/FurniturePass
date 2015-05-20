@@ -1,6 +1,8 @@
 {% extends "common/navbase.html" %}
 {% block title %}My Repository!{% endblock %}
 {% block content %}
+
+    <script src="{{ STATIC_URL}}item/js/jquery.nouislider.all.min.js"></script>
     <div id="content"></div>
     <script src="{{ STATIC_URL}}item/js/repoApp.js" type="text/jsx"></script>
 {% endblock %}
