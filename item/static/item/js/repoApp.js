@@ -12,15 +12,128 @@ var MenuItem = ReactBootstrap.MenuItem;
 var Grid = ReactBootstrap.Grid;
 var Col = ReactBootstrap.Col;
 var Row = ReactBootstrap.Row;
+var Well = ReactBootstrap.Well;
+var Table = ReactBootstrap.Table;
 var temp = window.location.href.split("/");
 var repoId = temp[4]; //this index is hard code right now, because it is kind of difficult to use angular-route
 var repoAddress = "/api/repo/" + repoId;
+var categoryAPIURL = "/api/category";
+var tagAPIURL = "/api/tag";
 
 
+var FilterList = React.createClass({
+    removeHandler: function(name) {
+        this.props.removeHandler(name);
+    },
+    render: function() {
+        console.log("render execute");
+        var filterItem = function(filterName, index) {
+          return <li key={index + filterName}
+              onClick={this.removeHandler.bind(this, filterName)}>{filterName}</li>;
+        };
+        return (
+            <ul>{this.props.filters.map(filterItem, this)}</ul>
+        );
+    }
+});
+
+var CategoryTagBox = React.createClass({
+    handleAddClick: function(name) {
+        this.props.addHandler(name);
+    },
+    handleRemoveClick: function(name) {
+        this.props.removeHandler(name);
+    },
+    renderCategory() {
+        var categoryNodes = (<span></span>);
+        if(this.props.categorylist.length != 0) {
+            console.log(this.props.categorylist);
+            categoryNodes = this.props.categorylist.map(function(categoryObject, i) {
+                return(
+                    <li key={i} className="categoryLabel"
+                        onClick={this.handleAddClick.bind(this, categoryObject.category_name)}>
+                    {categoryObject.category_name}
+                    </li>
+                );
+            }, this);
+        }
+        return categoryNodes;
+    },
+    renderTag() {
+        var TagNodes = (<span></span>);
+        if(this.props.taglist.length != 0) {
+            var count = 0;
+            console.log(this.props.taglist);
+            categoryNodes = this.props.taglist.map(function(tagObject) {
+                return(
+                    <li key={count++}><a href="#">{tagObject.tag_name}</a></li>
+                );
+            });
+        }
+        return TagNodes;
+    },
+    render: function() {
+        var categoryNodes = this.renderCategory();
+        var tagNodes = this.renderTag();
+        return(
+            <div>
+                <div className="filterDisplayBar">
+                    <Row>
+                        <Col xs={1}>
+                            <p>Filter By:</p>
+                        </Col>
+                        <Col xs={11}>
+                            <FilterList filters={this.props.filters}
+                                removeHandler={this.handleRemoveClick}></FilterList>
+                        </Col>
+                    </Row>
+                </div>
+                <div className="CateTagUl">
+                    <Row>
+                        <Col xs={1}>
+                            <p>Categories:</p>
+                        </Col>
+                        <Col xs={11}>
+                            <ul>
+                                {categoryNodes}
+                            </ul>
+                        </Col>
+                    </Row>
+                </div>
+                <div className="CateTagUl">
+                    <Row>
+                        <Col xs={1}>
+                            <p>Tags:</p>
+                        </Col>
+                        <Col xs={11}>
+                            <ul>
+                                {tagNodes}
+                            </ul>
+                        </Col>
+                    </Row>
+                </div>
+            </div>
+        );
+    }
+});
 
 var Slider = React.createClass({
+    render: function() {
+        return(
+                <Row>
+                    <Col xs={3}>
+                        <p>Min: <span id="slider-lower"></span></p>
+                    </Col>
+                    <Col xs={3}>
+                        <p>Max: <span id="slider-upper"></span></p>
+                    </Col>
+                    <Col xs={6}>
+                        <div id="slider"></div>
+                    </Col>
+                </Row>
+        );
+    },
     componentDidMount: function () {
-        console.log("componentDidMount() execute");
         function init_slider(This) {
             $("#slider").noUiSlider({
                 start: [0, 10000],
@@ -53,25 +166,6 @@ var Slider = React.createClass({
         init_slider(this);
         link();
         //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
-    },
-    render: function() {
-        console.log("render execute");
-        return(
-            <Grid>
-                <Row>
-                    <Col xs={6}>
-                        <p>Min: <span id="slider-lower"></span></p>
-                    </Col>
-                    <Col xs={6}>
-                        <p>Max: <span id="slider-upper"></span></p>
-                    </Col>
-                    <br/>
-                    <Col xs={12}>
-                        <div id="slider"></div>
-                    </Col>
-                </Row>
-            </Grid>
-        );
     }
 });
 
@@ -136,23 +230,21 @@ var ItemBox = React.createClass({
 var ItemList = React.createClass({
     render: function () {
         var keyword = this.props.filterText;
-        var count = 0;
-        var itemNodes = this.props.data.map(function (item) {
+        var itemNodes = this.props.data.map(function (item, i) {
             if (item.item_name.indexOf(keyword) != -1) {
                return (
                     <Item item_id={item.item_id} item_name={item.item_name} price={item.sell_price}
-                        owner={item.owner.username} time={item.expire_time} key={count++}>
+                        owner={item.owner.username} time={item.expire_time} imgurl1={item.image1}
+                        imgurl2={item.image2} imgurl3={item.image3} key={i}>
                         {item.description}
                     </Item>
                 );
             }
         });
         return (
-            <Grid>
-                <Row>
-                {itemNodes}
-                </Row>
-            </Grid>
+            <Row>
+            {itemNodes}
+            </Row>
         );
     }
 });
@@ -167,6 +259,9 @@ var Item = React.createClass({
                         <h5>
                             ${this.props.price}
                         </h5>
+                        <div className="thumbImage">
+                            <img src={this.props.imgurl1}></img>
+                        </div>
                         <div>
                             <ButtonToolbar>
                                 <OverlayTrigger trigger="click" placement="right" overlay={
@@ -195,10 +290,32 @@ var Item = React.createClass({
     }
 });
 
+
+
 var Repo = React.createClass({
-    loadCommentsFromServer: function () {
+    handleAddClick: function(name) {
+        var nextFilters = this.state.filters;
+        if (nextFilters.indexOf(name) == -1) {
+            nextFilters.push(name);
+            this.setState({
+                filters: nextFilters
+            });
+            console.log(nextFilters);
+        }
+    },
+    handleRemoveClick: function(name) {
+        var nextFilters = this.state.filters;
+        var index = nextFilters.indexOf(name);
+        if(index != -1) {
+            nextFilters.splice(index, 1);
+            this.setState({
+                filters: nextFilters
+            });
+        }
+    },
+    loadItemsFromServer: function () {
         $.ajax({
-            url: this.props.goto,
+            url: this.props.itemApiUrl,
             dataType: 'json',
             success: function (data) {
                 this.setState({data: data});
@@ -208,13 +325,41 @@ var Repo = React.createClass({
             }.bind(this)
         });
     },
+    loadCategoryAndTagFromServer: function() {
+        $.ajax({
+            url: this.props.cateApiUrl,
+            dataType: 'json',
+            success: function (data) {
+                this.setState({category: data});
+                //console.log(data);
+                //[object: {category_name, id}]
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(this.props.cateApiUrl, status, err.toString());
+            }.bind(this)
+        });
+        $.ajax({
+            url: this.props.tagApiUrl,
+            dataType: 'json',
+            success: function (data) {
+                this.setState({tag: data});
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(this.props.tagApiUrl, status, err.toString());
+            }.bind(this)
+        });
+    },
     componentDidMount: function () {
-        this.loadCommentsFromServer();
+        this.loadItemsFromServer();
+        this.loadCategoryAndTagFromServer();
         //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
     getInitialState: function() {
         return {
-            data: [],
+            filters:[],
+            tag: [],
+            category: [],
+            data: [],//item
             filterText: ''
         }
     },
@@ -227,21 +372,31 @@ var Repo = React.createClass({
     render: function() {
         return (
             <div>
-                <NavBarInstance searchText={this.state.filterText} func={this.handleUserInput}></NavBarInstance>
+                <NavBarInstance searchText={this.state.filterText}
+                    func={this.handleUserInput}>
+                </NavBarInstance>
                 <div className="container" >
-                    <Slider baseurl={this.props.goto}></Slider>
+                    <Well>
+                        <CategoryTagBox taglist={this.state.tag}
+                            categorylist={this.state.category}
+                            addHandler={this.handleAddClick}
+                            removeHandler={this.handleRemoveClick}
+                            filters={this.state.filters}></CategoryTagBox>
+                        <Slider baseurl={this.props.itemApiUrl}></Slider>
+                    </Well>
                     <br/>
-                    <ItemBox data={this.state.data} filterText={this.state.filterText}></ItemBox>
+                    <ItemBox
+                        data={this.state.data}
+                        filterText={this.state.filterText}>
+                    </ItemBox>
                 </div>
             </div>
         );
     }
 });
 
-
-
 React.render(
-    <Repo goto={repoAddress}/>,
+    <Repo itemApiUrl={repoAddress} cateApiUrl={categoryAPIURL} tagApiUrl={tagAPIURL}/>,
     document.getElementById('content')
 );
 

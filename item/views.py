@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
-from item.Serializer import ItemSerializer, CategorySerializer
+from item.Serializer import ItemSerializer, CategorySerializer, TagSerializer
 from item.models import Item, Category, Tag
 from rest_framework import generics
 from item.formsTemplates import UploadForm
@@ -26,14 +26,21 @@ class SingleItem(generics.ListAPIView):
         itemid = self.kwargs['pk']
         return list(Item.objects.filter(item_id=itemid))
 
-class CategoryAPIView(generics.ListAPIView):
+
+class CategoryView(generics.ListAPIView):
     model = Category
     serializer_class = CategorySerializer
 
     def get_queryset(self):
-        category_id = self.kwargs['pk']
-        print(Category.objects.filter(id=category_id))
-        return Category.objects.filter(id=category_id)
+        return Category.objects.all()
+
+
+class TagView(generics.ListAPIView):
+    model = Tag
+    serializer_class = TagSerializer
+
+    def get_queryset(self):
+        return Tag.objects.all()
 # Create your views here.
 
 

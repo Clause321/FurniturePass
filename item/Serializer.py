@@ -1,4 +1,4 @@
-from item.models import Item, Category
+from item.models import Item, Category, Tag
 from rest_framework import serializers
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,3 +16,8 @@ class ItemSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag

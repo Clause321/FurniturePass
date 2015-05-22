@@ -15,7 +15,7 @@ class Category(models.Model):
         return self.category_name
 
 class Item(models.Model):
-    item_name = models.CharField(max_length=40, null=True, unique=True)
+    item_name = models.CharField(max_length=40, null=True, unique=False)
     owner = models.ForeignKey('user.Account', related_name='myItem', null=True)
     final_buyer = models.ForeignKey('user.Account', related_name='myBoughtItem', null=True, blank=True)
     item_id = models.AutoField(primary_key=True)
