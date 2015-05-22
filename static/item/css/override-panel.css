@@ -7,4 +7,13 @@
 }
 
 .panel-body {
+
+}
+
+.thumbImage {
+    margin-bottom: 10px;
+}
+
+.thumbImage img {
+    width: 320px;
 }
