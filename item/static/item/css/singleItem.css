@@ -1,0 +1,16 @@
+.img-row {
+    padding: 0;
+}
+
+.img-row img{
+    padding: 0;
+    height: 100px;
+}
+
+.big-img img {
+    width: 550px;
+}
+
+.meta-block {
+    border-bottom: 2px solid #D2D2D2;
+}

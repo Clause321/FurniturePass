@@ -1,9 +1,57 @@
-var BASE_DIR = '/static/item/img/';
-var helper = [{"id":"1"},{"id":"2"},{"id":"3"}];
+var Label = ReactBootstrap.Label;
 
+var ItemPage = React.createClass({
+    getInitialState: function() {
+        return({
+            data: null,
+            imgUrls: []
+        });
+    },
+    loadItemInformation: function() {
+        $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            success: function (itemList) {
+                var item = itemList[0];
+                var validImgUrls = [];
+                if(item.image1 != null) {
+                    validImgUrls.push(item.image1);
+                }
+                if(item.image2 != null) {
+                    validImgUrls.push(item.image2);
+                }
+                if(item.image3 != null) {
+                    validImgUrls.push(item.image3);
+                }
+                this.setState({data: item, imgUrls : validImgUrls});
+                console.log(validImgUrls);
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+    componentDidMount: function () {
+        console.log("item page component Did mount");
+        this.loadItemInformation();
+    },
+    render: function() {
+        console.log("Item Page render");
+       return (
+           <div className="container" id="content-block">
+               <div className="col-xs-6">
+                   <Gallery imgUrls={this.state.imgUrls}></Gallery>
+               </div>
+               <div className="col-xs-6">
+                   <InformationBlock data={this.state.data}></InformationBlock>
+               </div>
+           </div>
+       );
+    }
+});
 
 var SelectedImg = React.createClass({
-   render: function() {
+    render: function() {
        return (
            <div className="big-img">
                <img src={this.props.source}/>
@@ -30,26 +78,27 @@ var ImageRow = React.createClass({
 });
 
 var Gallery = React.createClass({
-    handleClick: function(imageid) {
-        var imgsrc = BASE_DIR + imageid + '.png';
-        this.setState({displayImgSrc: imgsrc});
+    handleClick: function(index) {
+        this.setState({displayImgIndex: index});
     },
     getInitialState: function() {
+        console.log("Gallery initial");
         return {
-            displayImgSrc: (BASE_DIR+3+'.png'),
-            images: this.props.imageIds
+            displayImgIndex: 0
         }
     },
     render: function() {
+        console.log("Gallery render");
+        console.log(this.props.imgUrls[0]);
         return (
             <div className="gallery">
-                <SelectedImg source={this.state.displayImgSrc}/>
+                <SelectedImg source={this.props.imgUrls[this.state.displayImgIndex]}/>
                 <ImageRow>
-                    {this.state.images.map(function(image) {
+                    {this.props.imgUrls.map(function(thumbNailUrl, i) {
                       return (
-                        <a href={"#"+image.id} onClick={this.handleClick.bind(this,image.id)}>
-                          <ThumbNailImg thumbsource={BASE_DIR+'s_'+image.id+'.png'} />
-                        </a>
+                        <span onClick={this.handleClick.bind(this,i)} key={i}>
+                          <ThumbNailImg thumbsource={thumbNailUrl} />
+                        </span>
                       )
                     }, this)}
                 </ImageRow>
@@ -58,65 +107,35 @@ var Gallery = React.createClass({
    }
 });
 
-
-var ItemPage = React.createClass({
-    getInitialState: function() {
-        return({data: null});
-    },
-    loadItemInformation: function() {
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            success: function (item) {
-                this.setState({data: item[0]});
-                console.log(this.state.data.item_name)
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
-    },
-    componentDidMount: function () {
-        this.loadItemInformation();
-    },
-    render: function() {
-       return (
-           <div>
-               <div className="container">
-                   <div className="col-xs-6">
-                       <Gallery imageIds={helper}></Gallery>
-                   </div>
-                   <div className="col-xs-6">
-                       <InformationBlock data={this.state.data}></InformationBlock>
-                   </div>
-               </div>
-           </div>
-       );
-    }
-});
-
 var InformationBlock = React.createClass({
     render: function (){
-        var item_name;
-        var item_price;
-        var item_owner;
+        var item_name, item_price, item_owner, expireTime, description;
         if(this.props.data != null) {
             item_name = this.props.data.item_name;
             item_price = this.props.data.sell_price;
             item_owner = this.props.data.owner;
+            expireTime = this.props.data.expire_time;
+            description = this.props.data.description;
         }
         return(
-            <div>
-                <h1 className="">{item_name}</h1>
-                <div className="clearfix">
-                    <div className="pull-left">
-                        <p>owned by: {item_owner}</p>
+            <div id="infoBlock">
+                <div className="meta-block">
+                    <div className="clearfix">
+                        <h2 className="pull-left">{item_name}</h2>
+                        <Label className="pull-right">Sell by time: {expireTime}</Label>
                     </div>
-                    <div>
-                        <h3 className="pull-right">${item_price}</h3>
+                    <div className="clearfix">
+                        <div className="pull-left">
+                            <p>owned by: {item_owner}</p>
+                        </div>
+                        <div>
+                            <p className="pull-right">${item_price}</p>
+                        </div>
                     </div>
                 </div>
-
+                <div>
+                        <p>Item discription: {description}</p>
+                </div>
             </div>
         );
     }

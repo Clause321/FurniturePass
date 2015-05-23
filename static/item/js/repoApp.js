@@ -52,7 +52,7 @@ var CategoryTagBox = React.createClass({
                 return(
                     <li key={i} className="categoryLabel"
                         onClick={this.handleAddClick.bind(this, categoryObject.category_name)}>
-                    {categoryObject.category_name}
+                    <Label>{categoryObject.category_name}</Label>
                     </li>
                 );
             }, this);
@@ -198,7 +198,7 @@ var SearchBar = React.createClass({
 var NavBarInstance = React.createClass({
     render: function () {
         return (
-            <Navbar brand='StuffPass' className="navbar navbar-default navbar-static-top" role="navigation">
+            <Navbar brand='StuffPass' className="navbar-fixed-top" role="navigation">
                 <Nav>
                   <NavItem eventKey={1} href='#'>Link</NavItem>
                   <NavItem eventKey={2} href='#'>Link</NavItem>

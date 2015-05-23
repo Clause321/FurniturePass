@@ -10,7 +10,7 @@ var MenuItem = ReactBootstrap.MenuItem;
 var NavBarInstance = React.createClass({
     render: function () {
         return (
-            <Navbar brand='StuffPass' className="navbar-static-top" role="navigation">
+            <Navbar brand='StuffPass' className="navbar-fixed-top" role="navigation">
                 <Nav>
                   <NavItem eventKey={1} href='#'>Link</NavItem>
                   <NavItem eventKey={2} href='#'>Link</NavItem>

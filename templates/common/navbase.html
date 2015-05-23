@@ -3,7 +3,6 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-
     <title>{% block title %}{% endblock %}</title>
     <script src="{% static 'item/js/react.js' %}"></script>
     <script src="{% static 'item/js/JSXTransformer.js' %}"></script>
@@ -12,7 +11,8 @@
     <link rel="stylesheet" href="{% static 'item/css/bootstrap.min.css' %}">
     <!-- Optional theme -->
     <link rel="stylesheet" href="{% static 'item/css/bootstrap-theme.min.css' %}">
-
+    <link rel="stylesheet" href="{{ STATIC_URL }}item/css/singleItem.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}item/css/nav.css">
     <!-- Latest compiled and minified JavaScript -->
     <script src="{% static 'item/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'item/js/react-bootstrap.min.js' %}"></script>

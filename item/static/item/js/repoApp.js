@@ -13,6 +13,7 @@ var Col = ReactBootstrap.Col;
 var Row = ReactBootstrap.Row;
 var Well = ReactBootstrap.Well;
 var Table = ReactBootstrap.Table;
+var Label = ReactBootstrap.Label;
 var temp = window.location.href.split("/");
 var repoId = temp[4]; //this index is hard code right now, because it is kind of difficult to use angular-route
 var repoAddress = "/api/repo/" + repoId;
@@ -28,7 +29,7 @@ var FilterList = React.createClass({
         console.log("render execute");
         var filterItem = function(filterName, index) {
           return <li key={index + filterName}
-              onClick={this.removeHandler.bind(this, filterName)}>{filterName}</li>;
+              onClick={this.removeHandler.bind(this, filterName)}><Label>{filterName}</Label></li>;
         };
         return (
             <ul>{this.props.filters.map(filterItem, this)}</ul>
@@ -51,7 +52,7 @@ var CategoryTagBox = React.createClass({
                 return(
                     <li key={i} className="categoryLabel"
                         onClick={this.handleAddClick.bind(this, categoryObject.category_name)}>
-                    {categoryObject.category_name}
+                    <Label>{categoryObject.category_name}</Label>
                     </li>
                 );
             }, this);
@@ -197,7 +198,7 @@ var SearchBar = React.createClass({
 var NavBarInstance = React.createClass({
     render: function () {
         return (
-            <Navbar brand='StuffPass' className="navbar navbar-default navbar-static-top" role="navigation">
+            <Navbar brand='StuffPass' className="navbar-fixed-top" role="navigation">
                 <Nav>
                   <NavItem eventKey={1} href='#'>Link</NavItem>
                   <NavItem eventKey={2} href='#'>Link</NavItem>
@@ -372,7 +373,7 @@ var Repo = React.createClass({
                 <NavBarInstance searchText={this.state.filterText}
                     func={this.handleUserInput}>
                 </NavBarInstance>
-                <div className="container" >
+                <div className="container" id="content-block" >
                     <Well>
                         <CategoryTagBox taglist={this.state.tag}
                             categorylist={this.state.category}
