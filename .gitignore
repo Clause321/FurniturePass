@@ -1,4 +1,5 @@
 .*
+FurniturePass/media
 !.gitignore
 *.pyc
 *__pycache__/

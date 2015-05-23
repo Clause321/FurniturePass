@@ -9,7 +9,6 @@ var Nav = ReactBootstrap.Nav;
 var NavItem = ReactBootstrap.NavItem;
 var DropdownButton = ReactBootstrap.DropdownButton;
 var MenuItem = ReactBootstrap.MenuItem;
-var Grid = ReactBootstrap.Grid;
 var Col = ReactBootstrap.Col;
 var Row = ReactBootstrap.Row;
 var Well = ReactBootstrap.Well;
@@ -177,7 +176,7 @@ var SearchBar = React.createClass({
     },
     render: function() {
         return (
-            <form className="navbar-form navbar-right">
+            <div className="navbar-form navbar-right">
                 <div className="form-group">
                 <Input
                     type='text'
@@ -189,8 +188,8 @@ var SearchBar = React.createClass({
                     labelClassName='label-class'
                 />
                 </div>
-                <Button bsStyle='info' onClick={this.handleChange}>go!</Button>
-            </form>
+                <Button bsStyle='info' onClick={this.handleChange} id="searchbutton">go!</Button>
+            </div>
         );
     }
 });
@@ -242,9 +241,9 @@ var ItemList = React.createClass({
             }
         });
         return (
-            <Row>
-            {itemNodes}
-            </Row>
+            <div className="customRow">
+                {itemNodes}
+            </div>
         );
     }
 });
@@ -252,40 +251,38 @@ var ItemList = React.createClass({
 var Item = React.createClass({
     render: function () {
         return (
-            <Col xs={4}>
-                <div className="item">
-                    <Panel>
-                        <h4>{this.props.item_name}</h4>
-                        <h5>
-                            ${this.props.price}
-                        </h5>
-                        <div className="thumbImage">
-                            <img src={this.props.imgurl1}></img>
-                        </div>
-                        <div>
-                            <ButtonToolbar>
-                                <OverlayTrigger trigger="click" placement="right" overlay={
-                                    <Popover title={this.props.item_name}>
-                                        <div>
-                                            <h5>Owner: {this.props.owner}</h5>
-                                            <h5>price: ${this.props.price}</h5>
-                                            <h5>Expire Time: {this.props.time}</h5>
-                                            <p>
-                                                {this.props.children.toString()}
-                                            </p>
-                                        </div>
-                                    </Popover>}>
-                                    <Button bsStyle="default">Show Detail</Button>
-                                </OverlayTrigger>
-                                &nbsp;
-                                <a href={"/item/"+this.props.item_id}>
-                                    <Button bsStyle="info">Check it out</Button>
-                                </a>
-                            </ButtonToolbar>
-                        </div>
-                    </Panel>
-                </div>
-            </Col>
+            <div className="item">
+                <Panel>
+                    <h4>{this.props.item_name}</h4>
+                    <h5>
+                        ${this.props.price}
+                    </h5>
+                    <div className="thumbImage">
+                        <img src={this.props.imgurl1}></img>
+                    </div>
+                    <div>
+                        <ButtonToolbar>
+                            <OverlayTrigger trigger="click" placement="right" overlay={
+                                <Popover title={this.props.item_name}>
+                                    <div>
+                                        <h5>Owner: {this.props.owner}</h5>
+                                        <h5>price: ${this.props.price}</h5>
+                                        <h5>Expire Time: {this.props.time}</h5>
+                                        <p>
+                                            {this.props.children.toString()}
+                                        </p>
+                                    </div>
+                                </Popover>}>
+                                <Button bsStyle="default">Show Detail</Button>
+                            </OverlayTrigger>
+                            &nbsp;
+                            <a href={"/item/"+this.props.item_id}>
+                                <Button bsStyle="info">Check it out</Button>
+                            </a>
+                        </ButtonToolbar>
+                    </div>
+                </Panel>
+            </div>
         );
     }
 });
@@ -399,6 +396,14 @@ React.render(
     <Repo itemApiUrl={repoAddress} cateApiUrl={categoryAPIURL} tagApiUrl={tagAPIURL}/>,
     document.getElementById('content')
 );
+
+
+$(document).keydown(function(event) {
+    if (event.keyCode == 13) {
+        $("#searchbutton").click();
+    }
+});
+
 
 
 
