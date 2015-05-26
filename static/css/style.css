@@ -1,0 +1,29 @@
+.navi{
+    background-color: #1a8bff;
+}
+
+.navbar>.container .navbar-brand{
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/*
+AUTH PAGE
+*/
+
+.authForm-hidden{
+    display: none;
+}
+
+.authForm-create-button{
+    display: inline;
+    width: 45%;
+}
+
+.authForm-login-button{
+    display: inline;
+    float: right;
+    width: 45%;
+    margin-left: -45%;
+}
