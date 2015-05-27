@@ -4,6 +4,7 @@ from item.views import *
 from user.views import *
 from django.conf import settings
 from django.conf.urls.static import static
+from user
 
 urlpatterns = patterns('',
     # Examples:
@@ -18,6 +19,6 @@ urlpatterns = patterns('',
     url(r'^myreprocitory/(?P<pk>\d+)$', repo_index),
     url(r'^myaccount$', my_account),
     url(r'^item/(?P<pk>\d+)', item_view),
-    url(r'^user/upload$', add_product)
+    url(r'^user/upload$', add_product),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL,
                                                                              document_root=settings.MEDIA_ROOT)
