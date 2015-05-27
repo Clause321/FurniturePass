@@ -4,7 +4,6 @@ from item.views import *
 from user.views import *
 from django.conf import settings
 from django.conf.urls.static import static
-from user
 
 urlpatterns = patterns('',
     # Examples:
