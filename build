@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# this script is used to build the js bundle from react source codes
+
+cd react
+npm run build

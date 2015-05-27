@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/items/(?P<pk>\d+)$', ItemsList.as_view(), name='items-list'),
     url(r'^myreprocitory/(?P<pk>\d+)$', repo_index),
+    url(r'^$', 'index.views.index'),
 )
