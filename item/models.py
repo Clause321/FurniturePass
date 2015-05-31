@@ -1,6 +1,8 @@
 from django.db import models
+from mptt.models import MPTTModel
 from item.util import upload_helper
 import user
+
 
 class Tag(models.Model):
     tag_name = models.CharField(unique=True, max_length=20, null=True)
@@ -8,11 +10,14 @@ class Tag(models.Model):
     def __str__(self):
         return self.tag_name
 
-class Category(models.Model):
+
+class Category(MPTTModel):
     category_name = models.CharField(max_length=40, null=True)
+    parent = models.ForeignKey('self', blank=True, null=True, related_name="children")
 
     def __str__(self):
         return self.category_name
+
 
 class Item(models.Model):
     item_name = models.CharField(max_length=40, null=True, unique=False)
@@ -27,11 +32,6 @@ class Item(models.Model):
     tag = models.ManyToManyField(Tag, blank=True)
     category = models.ManyToManyField(Category, blank=True)
     description = models.TextField(null=True)
-    """
-    image1 = models.ImageField(upload_to=upload_helper_function('photo'), null=True, blank=True)
-    image2 = models.ImageField(upload_to=upload_helper_function('photo'), null=True, blank=True)
-    image3 = models.ImageField(upload_to=upload_helper_function('photo'), null=True, blank=True)
-    """
     image1 = models.ImageField(upload_to=upload_helper, null=True, blank=True)
     image2 = models.ImageField(upload_to=upload_helper, null=True, blank=True)
     image3 = models.ImageField(upload_to=upload_helper, null=True, blank=True)

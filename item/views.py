@@ -1,12 +1,38 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render, redirect
-from item.Serializer import ItemSerializer, CategorySerializer, TagSerializer
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from rest_framework.renderers import JSONRenderer
+from item.serializer import ItemSerializer, CategorySerializer, TagSerializer
 from item.models import Item, Category, Tag
 from rest_framework import generics
 from item.formsTemplates import UploadForm
 from user.models import Account
 from item.util import datetime_format_helper
+from django.db.models import Q
+
+def display(categories):
+    display_list = {}
+
+    for category in categories:
+        children = category.children.all()
+        if len(children) > 0:
+            display_list[category.category_name] = (display(children))
+        elif len(children) == 0:
+            display_list[category.category_name] = {}
+    return display_list
+
+
+class testList(generics.ListAPIView):
+    model = Category
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        input = display(Category.objects.filter(parent=None))
+        print(input)
+        json = JSONRenderer().render(input)
+        return [{'email': 'hotdog@umich.edu'}]
+
 
 
 class ItemsList(generics.ListAPIView):
@@ -42,6 +68,10 @@ class TagView(generics.ListAPIView):
     def get_queryset(self):
         return Tag.objects.all()
 # Create your views here.
+
+def search_test(request):
+    print(request.GET['q'])
+    return HttpResponse("success")
 
 
 def repo_index(request, pk):

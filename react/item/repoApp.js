@@ -1,23 +1,14 @@
-var Panel = ReactBootstrap.Panel;
-var ButtonToolbar = ReactBootstrap.ButtonToolbar;
-var Button = ReactBootstrap.Button;
-var Popover = ReactBootstrap.Popover;
-var OverlayTrigger = ReactBootstrap.OverlayTrigger;
-var Input = ReactBootstrap.Input;
-var Navbar = ReactBootstrap.Navbar;
-var Nav = ReactBootstrap.Nav;
-var NavItem = ReactBootstrap.NavItem;
-var DropdownButton = ReactBootstrap.DropdownButton;
-var MenuItem = ReactBootstrap.MenuItem;
-var Col = ReactBootstrap.Col;
-var Row = ReactBootstrap.Row;
-var Well = ReactBootstrap.Well;
-var Table = ReactBootstrap.Table;
-var temp = window.location.href.split("/");
-var repoId = temp[4]; //this index is hard code right now, because it is kind of difficult to use angular-route
-var repoAddress = "/api/repo/" + repoId;
-var categoryAPIURL = "/api/category";
-var tagAPIURL = "/api/tag";
+var React = require('react/addons');
+var $ = require('jquery');
+
+var { Panel, ButtonToolbar, Button, Popover, OverlayTrigger,
+    Nav, NavItem, DropdownButton, MenuItem, Navbar, Grid, Row,
+    Col, Input, Well } = require('react-bootstrap');
+var { Navigation } = require('react-router');
+
+const categoryAPI_URL = "/api/category";
+const tagAPI_URL = "/api/tag";
+const repoAPI_BASE_URL = "/api/repo/";
 
 
 var FilterList = React.createClass({
@@ -114,7 +105,7 @@ var CategoryTagBox = React.createClass({
     }
 });
 
-var Slider = React.createClass({
+/*var Slider = React.createClass({
     render: function() {
         return(
                 <Row>
@@ -164,7 +155,7 @@ var Slider = React.createClass({
         link();
         //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     }
-});
+});*/
 
 /*This is search bar module*/
 var SearchBar = React.createClass({
@@ -274,7 +265,7 @@ var Item = React.createClass({
                                 <Button bsStyle="default">Show Detail</Button>
                             </OverlayTrigger>
                             &nbsp;
-                            <a href={"/item/"+this.props.item_id}>
+                            <a href={"/#/item/"+this.props.item_id}>
                                 <Button bsStyle="info">Check it out</Button>
                             </a>
                         </ButtonToolbar>
@@ -310,19 +301,19 @@ var Repo = React.createClass({
     },
     loadItemsFromServer: function () {
         $.ajax({
-            url: this.props.itemApiUrl,
+            url: repoAPI_BASE_URL+this.props.params.RepoID,
             dataType: 'json',
             success: function (data) {
                 this.setState({data: data});
             }.bind(this),
             error: function (xhr, status, err) {
-                console.error(this.props.goto, status, err.toString());
+                console.error(repoAPI_BASE_URL+this.props.params.RepoID, status, err.toString());
             }.bind(this)
         });
     },
     loadCategoryAndTagFromServer: function() {
         $.ajax({
-            url: this.props.cateApiUrl,
+            url: categoryAPI_URL,
             dataType: 'json',
             success: function (data) {
                 this.setState({category: data});
@@ -330,21 +321,22 @@ var Repo = React.createClass({
                 //[object: {category_name, id}]
             }.bind(this),
             error: function (xhr, status, err) {
-                console.error(this.props.cateApiUrl, status, err.toString());
+                console.error(categoryAPI_URL, status, err.toString());
             }.bind(this)
         });
         $.ajax({
-            url: this.props.tagApiUrl,
+            url: tagAPI_URL,
             dataType: 'json',
             success: function (data) {
                 this.setState({tag: data});
             }.bind(this),
             error: function (xhr, status, err) {
-                console.error(this.props.tagApiUrl, status, err.toString());
+                console.error(tagAPI_URL, status, err.toString());
             }.bind(this)
         });
     },
     componentDidMount: function () {
+        console.log(this.props.params);
         this.loadItemsFromServer();
         this.loadCategoryAndTagFromServer();
         //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
@@ -377,7 +369,6 @@ var Repo = React.createClass({
                             addHandler={this.handleAddClick}
                             removeHandler={this.handleRemoveClick}
                             filters={this.state.filters}></CategoryTagBox>
-                        <Slider baseurl={this.props.itemApiUrl}></Slider>
                     </Well>
                     <br/>
                     <ItemBox
@@ -390,18 +381,9 @@ var Repo = React.createClass({
     }
 });
 
-React.render(
+/*React.render(
     <Repo itemApiUrl={repoAddress} cateApiUrl={categoryAPIURL} tagApiUrl={tagAPIURL}/>,
     document.getElementById('content')
-);
+);*/
 
-
-$(document).keydown(function(event) {
-    if (event.keyCode == 13) {
-        $("#searchbutton").click();
-    }
-});
-
-
-
-
+module.exports = Repo;

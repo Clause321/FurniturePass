@@ -1,17 +1,12 @@
 from item.models import Item, Category, Tag
+from user.serializer import AccountSerializer
 from rest_framework import serializers
+
 class ItemSerializer(serializers.ModelSerializer):
+    owner = AccountSerializer()
     class Meta:
         model = Item
-        read_only_fields = ('owner',
-                            'item_name',
-                            'description',
-                            'sell_price',
-                            'source',
-                            'status',
-                            'tag',
-                            'expire_time')
-
+        depth = 1
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
