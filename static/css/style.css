@@ -158,3 +158,12 @@ Thanks :)*/
     cursor: pointer;
     opacity: 1;
 }
+
+.filters > ul {
+    list-style-type: none;
+}
+
+.filters ul li {
+    display: inline;
+    padding-left: 10px;
+}

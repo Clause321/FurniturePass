@@ -6,14 +6,15 @@ var $ = require('jquery');
 
 var { Button, Row, Grid, Col, Well } = require('react-bootstrap');
 
-function renderTreeToList(node){
-    if(node.children.length != 0) {
+function renderTreeToList(node, This) {
+    var wrapper = {'id': node.self.id, 'category_name': node.self.category_name};
+    if (node.children.length != 0) {
         return (
             <li key={node.self.id}>
-                <a>{node.self.category_name}</a>
+                <a onClick={This.addHandler.bind(This, wrapper)}>{node.self.category_name}</a>
                 <ul>
-                    {node.children.map(function(child_node) {
-                        return renderTreeToList(child_node);
+                    {node.children.map(function (child_node) {
+                        return renderTreeToList(child_node, This);
                     })}
                 </ul>
             </li>
@@ -22,14 +23,16 @@ function renderTreeToList(node){
     else {
         return (
             <li key={node.self.id}>
-                <a>{node.self.category_name}</a>
+                <a onClick={This.addHandler.bind(This, wrapper)}>{node.self.category_name}</a>
             </li>
         );
     }
-
 }
 
 var CategoryTree = React.createClass({
+    addHandler: function(wrapper) {
+        this.props.AddFilterHandler(wrapper);
+    },
     render: function() {
         return (
             <div className="tree" id={"tree-node-"+this.props.root_node.self.id}>
@@ -37,7 +40,7 @@ var CategoryTree = React.createClass({
                     <Col xs={8}>
                         <div>
                             <ul>
-                                {renderTreeToList(this.props.root_node)}
+                                {renderTreeToList(this.props.root_node, this)}
                             </ul>
                         </div>
                     </Col>
@@ -56,7 +59,11 @@ var CategoryTreeBox = React.createClass({
     render: function() {
         return (
             <div className="CategoryTreeBox">
-                <CategoryTree root_node={this.props.root_node} navFunction={this.props.navFunction}></CategoryTree>
+                <CategoryTree
+                    root_node={this.props.root_node}
+                    navFunction={this.props.navFunction}
+                    AddFilterHandler={this.props.AddFilterHandler}>
+                </CategoryTree>
             </div>
         );
     }
@@ -80,6 +87,7 @@ var EveryThingBox = React.createClass({
             backgroundRepeat: 'no-repeat'
         };
         var treeNodeId = this.props.correspond_node.self.id;
+        console.log("handle add");
         return (
             <div>
                 <div style={divStyle} className="banner" onClick={this.showTree.bind(this, treeNodeId)}>
@@ -87,7 +95,8 @@ var EveryThingBox = React.createClass({
                 </div>
                 <CategoryTreeBox
                     root_node={this.props.correspond_node}
-                    navFunction={this.returnBack.bind(this, treeNodeId)}>
+                    navFunction={this.returnBack.bind(this, treeNodeId)}
+                    AddFilterHandler={this.props.AddFilterHandler}>
                 </CategoryTreeBox>
             </div>
         );
@@ -95,6 +104,20 @@ var EveryThingBox = React.createClass({
 });
 
 var EntryPage = React.createClass({
+    addFilter: function(wrapper) {
+        var current_filters = this.state.filters;
+        if(current_filters.length == 5) return;//limit the filter size
+        for(var i = 0; i < current_filters.length; i++) {
+            if(current_filters[i].id == wrapper.id) {
+                console.log("should jump out");
+                return;
+            }
+        }
+        current_filters.push(wrapper);
+        this.setState({
+            filters: current_filters
+        });
+    },
     loadTreeFromServer: function() {
         $.ajax({
             url: '/api/category',
@@ -138,18 +161,20 @@ var EntryPage = React.createClass({
         })
     },
     render: function() {
+        var This = this;
         var BannerImages = (this.state.root_nodes.length==0 ? "" : this.state.root_nodes.map(function(root_node, i) {
             return(
-                <EveryThingBox url={root_node.self.banner}
+                <EveryThingBox url={root_node.self.banner} AddFilterHandler={This.addFilter}
                     banner_name={root_node.self.category_name} correspond_node={root_node}
                     key={i}>
                 </EveryThingBox>
             );
         }));
+        var current_filters = this.state.filters;
         return(
             <div className="container">
                 <Well>
-                    <p>This space is left for filters</p>
+                    <FilterBox filters={current_filters}></FilterBox>
                 </Well>
                 {BannerImages}
             </div>
@@ -157,5 +182,21 @@ var EntryPage = React.createClass({
     }
 });
 
+var FilterBox = React.createClass({
+    render: function() {
+        var results =(this.props.filters.map(function(wrapper) {
+            return (
+                <li>{wrapper.category_name}</li>
+            );
+        }));
+        return (
+            <div className="filters">
+                <ul>
+                    {results}
+                </ul>
+            </div>
+        );
+    }
+});
 
 module.exports = EntryPage;

@@ -177,14 +177,15 @@ var $ = require('jquery');
 
 var var$0 = require('react-bootstrap'), Button = var$0.Button, Row = var$0.Row, Grid = var$0.Grid, Col = var$0.Col, Well = var$0.Well;
 
-function renderTreeToList(node){
-    if(node.children.length != 0) {
+function renderTreeToList(node, This) {
+    var wrapper = {'id': node.self.id, 'category_name': node.self.category_name};
+    if (node.children.length != 0) {
         return (
             React.createElement("li", {key: node.self.id}, 
-                React.createElement("a", null, node.self.category_name), 
+                React.createElement("a", {onClick: This.addHandler.bind(This, wrapper)}, node.self.category_name), 
                 React.createElement("ul", null, 
-                    node.children.map(function(child_node) {
-                        return renderTreeToList(child_node);
+                    node.children.map(function (child_node) {
+                        return renderTreeToList(child_node, This);
                     })
                 )
             )
@@ -193,14 +194,16 @@ function renderTreeToList(node){
     else {
         return (
             React.createElement("li", {key: node.self.id}, 
-                React.createElement("a", null, node.self.category_name)
+                React.createElement("a", {onClick: This.addHandler.bind(This, wrapper)}, node.self.category_name)
             )
         );
     }
-
 }
 
 var CategoryTree = React.createClass({displayName: "CategoryTree",
+    addHandler: function(wrapper) {
+        this.props.AddFilterHandler(wrapper);
+    },
     render: function() {
         return (
             React.createElement("div", {className: "tree", id: "tree-node-"+this.props.root_node.self.id}, 
@@ -208,7 +211,7 @@ var CategoryTree = React.createClass({displayName: "CategoryTree",
                     React.createElement(Col, {xs: 8}, 
                         React.createElement("div", null, 
                             React.createElement("ul", null, 
-                                renderTreeToList(this.props.root_node)
+                                renderTreeToList(this.props.root_node, this)
                             )
                         )
                     ), 
@@ -227,7 +230,11 @@ var CategoryTreeBox = React.createClass({displayName: "CategoryTreeBox",
     render: function() {
         return (
             React.createElement("div", {className: "CategoryTreeBox"}, 
-                React.createElement(CategoryTree, {root_node: this.props.root_node, navFunction: this.props.navFunction})
+                React.createElement(CategoryTree, {
+                    root_node: this.props.root_node, 
+                    navFunction: this.props.navFunction, 
+                    AddFilterHandler: this.props.AddFilterHandler}
+                )
             )
         );
     }
@@ -236,7 +243,6 @@ var EveryThingBox = React.createClass({displayName: "EveryThingBox",
     showTree: function(treeNodeId) {
         $('.banner').fadeOut('fast', function() {
             var selector = '#tree-node-' + treeNodeId;
-            console.log("please fade in:" + treeNodeId + "!");
             $(selector).fadeIn();
         });
     },
@@ -252,6 +258,7 @@ var EveryThingBox = React.createClass({displayName: "EveryThingBox",
             backgroundRepeat: 'no-repeat'
         };
         var treeNodeId = this.props.correspond_node.self.id;
+        console.log("handle add");
         return (
             React.createElement("div", null, 
                 React.createElement("div", {style: divStyle, className: "banner", onClick: this.showTree.bind(this, treeNodeId)}, 
@@ -259,7 +266,8 @@ var EveryThingBox = React.createClass({displayName: "EveryThingBox",
                 ), 
                 React.createElement(CategoryTreeBox, {
                     root_node: this.props.correspond_node, 
-                    navFunction: this.returnBack.bind(this, treeNodeId)}
+                    navFunction: this.returnBack.bind(this, treeNodeId), 
+                    AddFilterHandler: this.props.AddFilterHandler}
                 )
             )
         );
@@ -267,6 +275,20 @@ var EveryThingBox = React.createClass({displayName: "EveryThingBox",
 });
 
 var EntryPage = React.createClass({displayName: "EntryPage",
+    addFilter: function(wrapper) {
+        var current_filters = this.state.filters;
+        if(current_filters.length == 5) return;//limit the filter size
+        for(var i = 0; i < current_filters.length; i++) {
+            if(current_filters[i].id == wrapper.id) {
+                console.log("should jump out");
+                return;
+            }
+        }
+        current_filters.push(wrapper);
+        this.setState({
+            filters: current_filters
+        });
+    },
     loadTreeFromServer: function() {
         $.ajax({
             url: '/api/category',
@@ -310,18 +332,20 @@ var EntryPage = React.createClass({displayName: "EntryPage",
         })
     },
     render: function() {
+        var This = this;
         var BannerImages = (this.state.root_nodes.length==0 ? "" : this.state.root_nodes.map(function(root_node, i) {
             return(
-                React.createElement(EveryThingBox, {url: root_node.self.banner, 
+                React.createElement(EveryThingBox, {url: root_node.self.banner, AddFilterHandler: This.addFilter, 
                     banner_name: root_node.self.category_name, correspond_node: root_node, 
                     key: i}
                 )
             );
         }));
+        var current_filters = this.state.filters;
         return(
             React.createElement("div", {className: "container"}, 
                 React.createElement(Well, null, 
-                    React.createElement("p", null, "This space is left for filters")
+                    React.createElement(FilterBox, {filters: current_filters})
                 ), 
                 BannerImages
             )
@@ -329,6 +353,22 @@ var EntryPage = React.createClass({displayName: "EntryPage",
     }
 });
 
+var FilterBox = React.createClass({displayName: "FilterBox",
+    render: function() {
+        var results =(this.props.filters.map(function(wrapper) {
+            return (
+                React.createElement("li", null, wrapper.category_name)
+            );
+        }));
+        return (
+            React.createElement("div", {className: "filters"}, 
+                React.createElement("ul", null, 
+                    results
+                )
+            )
+        );
+    }
+});
 
 module.exports = EntryPage;
 
