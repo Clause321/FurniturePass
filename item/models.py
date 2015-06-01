@@ -14,7 +14,7 @@ class Tag(models.Model):
 class Category(MPTTModel):
     category_name = models.CharField(max_length=40, null=True)
     parent = models.ForeignKey('self', blank=True, null=True, related_name="children")
-
+    banner = models.ImageField(upload_to=upload_helper, null=True, blank=True)
     def __str__(self):
         return self.category_name
 

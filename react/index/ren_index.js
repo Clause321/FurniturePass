@@ -4,12 +4,10 @@
 var React = require('react/addons');
 var $ = require('jquery');
 
-var { Button, Row, Grid, Col } = require('react-bootstrap');
+var { Button, Row, Grid, Col, Well } = require('react-bootstrap');
 
 function renderTreeToList(node){
-    console.log(node.children);
     if(node.children.length != 0) {
-        console.log(node.children.length);
         return (
             <li key={node.self.id}>
                 <a>{node.self.category_name}</a>
@@ -31,15 +29,72 @@ function renderTreeToList(node){
 
 }
 
-
-
 var CategoryTree = React.createClass({
-    getInitialState: function() {
-        return ({
-            "root_nodes": [],
-            "structure": {}
-        })
+    render: function() {
+        return (
+            <div className="tree" id={"tree-node-"+this.props.root_node.self.id}>
+                <Row>
+                    <Col xs={8}>
+                        <div>
+                            <ul>
+                                {renderTreeToList(this.props.root_node)}
+                            </ul>
+                        </div>
+                    </Col>
+                    <Col xs={4}>
+                        <Button onClick={this.props.navFunction}>Back</Button>
+                    </Col>
+                </Row>
+
+            </div>
+        );
+    }
+});
+
+
+var CategoryTreeBox = React.createClass({
+    render: function() {
+        return (
+            <div className="CategoryTreeBox">
+                <CategoryTree root_node={this.props.root_node} navFunction={this.props.navFunction}></CategoryTree>
+            </div>
+        );
+    }
+});
+var EveryThingBox = React.createClass({
+    showTree: function(treeNodeId) {
+        $('.banner').fadeOut('fast', function() {
+            var selector = '#tree-node-' + treeNodeId;
+            $(selector).fadeIn();
+        });
     },
+    returnBack: function(treeNodeId) {
+        var selector = '#tree-node-' + treeNodeId;
+        $(selector).fadeOut('fast', function() {
+            $('.banner').fadeIn('fast');
+        });
+    },
+    render: function() {
+        var divStyle = {
+            backgroundImage: 'url(' + this.props.url + ')',
+            backgroundRepeat: 'no-repeat'
+        };
+        var treeNodeId = this.props.correspond_node.self.id;
+        return (
+            <div>
+                <div style={divStyle} className="banner" onClick={this.showTree.bind(this, treeNodeId)}>
+                    <p>{this.props.banner_name}</p>
+                </div>
+                <CategoryTreeBox
+                    root_node={this.props.correspond_node}
+                    navFunction={this.returnBack.bind(this, treeNodeId)}>
+                </CategoryTreeBox>
+            </div>
+        );
+    }
+});
+
+var EntryPage = React.createClass({
     loadTreeFromServer: function() {
         $.ajax({
             url: '/api/category',
@@ -75,28 +130,32 @@ var CategoryTree = React.createClass({
     componentDidMount: function() {
         this.loadTreeFromServer();
     },
+    getInitialState: function() {
+        return({
+            "root_nodes": [],
+            "structure": {},
+            "filters": []
+        })
+    },
     render: function() {
-        var treeUniqueListResult = this.state.root_nodes.map(function(root_node) {
-            return (
-                <Col xs={6}>
-                    <div>
-                        <ul>
-                            {renderTreeToList(root_node)}
-                        </ul>
-                    </div>
-                </Col>
+        var BannerImages = (this.state.root_nodes.length==0 ? "" : this.state.root_nodes.map(function(root_node, i) {
+            return(
+                <EveryThingBox url={root_node.self.banner}
+                    banner_name={root_node.self.category_name} correspond_node={root_node}
+                    key={i}>
+                </EveryThingBox>
             );
-        });
-        return (
+        }));
+        return(
             <div className="container">
-                <div className="tree">
-                    <Row>
-                        {treeUniqueListResult}
-                    </Row>
-                </div>
+                <Well>
+                    <p>This space is left for filters</p>
+                </Well>
+                {BannerImages}
             </div>
-
         );
     }
 });
-module.exports = CategoryTree;
+
+
+module.exports = EntryPage;

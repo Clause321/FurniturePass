@@ -175,15 +175,13 @@ module.exports = React.createClass({displayName: "exports",
 var React = require('react/addons');
 var $ = require('jquery');
 
-var var$0 = require('react-bootstrap'), Button = var$0.Button, Row = var$0.Row, Grid = var$0.Grid, Col = var$0.Col;
+var var$0 = require('react-bootstrap'), Button = var$0.Button, Row = var$0.Row, Grid = var$0.Grid, Col = var$0.Col, Well = var$0.Well;
 
 function renderTreeToList(node){
-    console.log(node.children);
     if(node.children.length != 0) {
-        console.log(node.children.length);
         return (
             React.createElement("li", {key: node.self.id}, 
-                React.createElement("a", {href: ""}, node.self.category_name), 
+                React.createElement("a", null, node.self.category_name), 
                 React.createElement("ul", null, 
                     node.children.map(function(child_node) {
                         return renderTreeToList(child_node);
@@ -202,15 +200,73 @@ function renderTreeToList(node){
 
 }
 
-
-
 var CategoryTree = React.createClass({displayName: "CategoryTree",
-    getInitialState: function() {
-        return ({
-            "root_nodes": [],
-            "structure": {}
-        })
+    render: function() {
+        return (
+            React.createElement("div", {className: "tree", id: "tree-node-"+this.props.root_node.self.id}, 
+                React.createElement(Row, null, 
+                    React.createElement(Col, {xs: 8}, 
+                        React.createElement("div", null, 
+                            React.createElement("ul", null, 
+                                renderTreeToList(this.props.root_node)
+                            )
+                        )
+                    ), 
+                    React.createElement(Col, {xs: 4}, 
+                        React.createElement(Button, {onClick: this.props.navFunction}, "Back")
+                    )
+                )
+
+            )
+        );
+    }
+});
+
+
+var CategoryTreeBox = React.createClass({displayName: "CategoryTreeBox",
+    render: function() {
+        return (
+            React.createElement("div", {className: "CategoryTreeBox"}, 
+                React.createElement(CategoryTree, {root_node: this.props.root_node, navFunction: this.props.navFunction})
+            )
+        );
+    }
+});
+var EveryThingBox = React.createClass({displayName: "EveryThingBox",
+    showTree: function(treeNodeId) {
+        $('.banner').fadeOut('fast', function() {
+            var selector = '#tree-node-' + treeNodeId;
+            console.log("please fade in:" + treeNodeId + "!");
+            $(selector).fadeIn();
+        });
     },
+    returnBack: function(treeNodeId) {
+        var selector = '#tree-node-' + treeNodeId;
+        $(selector).fadeOut('fast', function() {
+            $('.banner').fadeIn('fast');
+        });
+    },
+    render: function() {
+        var divStyle = {
+            backgroundImage: 'url(' + this.props.url + ')',
+            backgroundRepeat: 'no-repeat'
+        };
+        var treeNodeId = this.props.correspond_node.self.id;
+        return (
+            React.createElement("div", null, 
+                React.createElement("div", {style: divStyle, className: "banner", onClick: this.showTree.bind(this, treeNodeId)}, 
+                    React.createElement("p", null, this.props.banner_name)
+                ), 
+                React.createElement(CategoryTreeBox, {
+                    root_node: this.props.correspond_node, 
+                    navFunction: this.returnBack.bind(this, treeNodeId)}
+                )
+            )
+        );
+    }
+});
+
+var EntryPage = React.createClass({displayName: "EntryPage",
     loadTreeFromServer: function() {
         $.ajax({
             url: '/api/category',
@@ -246,31 +302,35 @@ var CategoryTree = React.createClass({displayName: "CategoryTree",
     componentDidMount: function() {
         this.loadTreeFromServer();
     },
+    getInitialState: function() {
+        return({
+            "root_nodes": [],
+            "structure": {},
+            "filters": []
+        })
+    },
     render: function() {
-        var treeUniqueListResult = this.state.root_nodes.map(function(root_node) {
-            return (
-                React.createElement(Col, {xs: 6}, 
-                    React.createElement("div", null, 
-                        React.createElement("ul", null, 
-                            renderTreeToList(root_node)
-                        )
-                    )
+        var BannerImages = (this.state.root_nodes.length==0 ? "" : this.state.root_nodes.map(function(root_node, i) {
+            return(
+                React.createElement(EveryThingBox, {url: root_node.self.banner, 
+                    banner_name: root_node.self.category_name, correspond_node: root_node, 
+                    key: i}
                 )
             );
-        });
-        return (
+        }));
+        return(
             React.createElement("div", {className: "container"}, 
-                React.createElement("div", {className: "tree"}, 
-                    React.createElement(Row, null, 
-                        treeUniqueListResult
-                    )
-                )
+                React.createElement(Well, null, 
+                    React.createElement("p", null, "This space is left for filters")
+                ), 
+                BannerImages
             )
-
         );
     }
 });
-module.exports = CategoryTree;
+
+
+module.exports = EntryPage;
 
 },{"jquery":9,"react-bootstrap":66,"react/addons":118}],5:[function(require,module,exports){
 var React = require('react/addons');

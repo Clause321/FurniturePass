@@ -1,3 +1,4 @@
+/*
 .navi{
     background-color: #1a8bff;
 }
@@ -6,7 +7,7 @@
     font-size: 24px;
     font-weight: bold;
 }
-
+*/
 /*
 AUTH PAGE
 */
@@ -30,6 +31,10 @@ AUTH PAGE
 
 /*Now the Tree CSS*/
 * {margin: 0; padding: 0;}
+
+.tree {
+    display: none;
+}
 
 .tree ul {
 	padding-top: 20px; position: relative;
@@ -119,6 +124,7 @@ right connector from last child*/
 /*Time for some hover effects*/
 /*We will apply the hover effect the the lineage of the element also*/
 .tree li a:hover, .tree li a:hover+ul li a {
+    cursor: pointer;
 	background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
 }
 /*Connector styles on hover*/
@@ -131,3 +137,24 @@ right connector from last child*/
 
 /*Thats all. I hope you enjoyed it.
 Thanks :)*/
+
+/* ren index CSS */
+.banner {
+    width: 1140px;
+    height: 200px;
+    margin-top: 10px;
+    opacity: 0.6;
+}
+
+.banner > p {
+    font-family: arial, verdana, tahoma;
+    font-size: 40px;
+    text-align: center;
+    color: white;
+    padding-top: 120px;
+}
+
+.banner:hover {
+    cursor: pointer;
+    opacity: 1;
+}
