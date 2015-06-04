@@ -4,7 +4,7 @@
 var React = require('react/addons');
 var $ = require('jquery');
 
-var { Button, Row, Grid, Col, Well } = require('react-bootstrap');
+var { Button, Row, Grid, Col, Well, Input } = require('react-bootstrap');
 
 function renderTreeToList(node, This) {
     var wrapper = {'id': node.self.id, 'category_name': node.self.category_name};
@@ -106,7 +106,7 @@ var EveryThingBox = React.createClass({
 var EntryPage = React.createClass({
     addFilter: function(wrapper) {
         var current_filters = this.state.filters;
-        if(current_filters.length == 5) return;//limit the filter size
+        if(current_filters.length == 3) return;//limit the filter size
         for(var i = 0; i < current_filters.length; i++) {
             if(current_filters[i].id == wrapper.id) {
                 console.log("should jump out");
@@ -174,7 +174,14 @@ var EntryPage = React.createClass({
         return(
             <div className="container">
                 <Well>
-                    <FilterBox filters={current_filters}></FilterBox>
+                    <Row>
+                        <Col xs={6}>
+                            <FilterBox filters={current_filters}></FilterBox>
+                        </Col>
+                        <Col xs={6}>
+                            <SearchBox></SearchBox>
+                        </Col>
+                    </Row>
                 </Well>
                 {BannerImages}
             </div>
@@ -195,6 +202,29 @@ var FilterBox = React.createClass({
                     {results}
                 </ul>
             </div>
+        );
+    }
+});
+
+
+const SearchButton = (
+    <Button>Go</Button>
+);
+
+var SearchBox = React.createClass({
+    render: function() {
+        return (
+            <form>
+                <Input
+                    type='text'
+                    placeholder='Enter keyword...'
+                    help='Please give some keyword to narrow results down'
+                    bsStyle={'info'}
+                    ref='input'
+                    groupClassName='group-class'
+                    labelClassName='label-class'
+                    buttonAfter={SearchButton} />
+            </form>
         );
     }
 });

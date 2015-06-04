@@ -9,6 +9,7 @@ from rest_framework import generics
 from item.formsTemplates import UploadForm
 from user.models import Account
 from item.util import datetime_format_helper
+from item.Pagination import StandardResultsSetPagination
 from django.db.models import Q
 
 def display(categories):
@@ -34,6 +35,9 @@ class testList(generics.ListAPIView):
         return [{'email': 'hotdog@umich.edu'}]
 
 
+'''
+This class is to show the Item List
+'''
 
 class ItemsList(generics.ListAPIView):
     model = Item
@@ -42,6 +46,15 @@ class ItemsList(generics.ListAPIView):
     def get_queryset(self):
         theid = self.kwargs['pk']
         return Item.objects.filter(owner__pk=theid)
+
+
+class SelectedItem(generics.ListAPIView):
+    model = Item
+    serializer_class = ItemSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        return Item.objects.all()
 
 
 class SingleItem(generics.ListAPIView):

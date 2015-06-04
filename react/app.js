@@ -24,6 +24,7 @@ var Index = require('./index/index');
 var Repo = require('./item/repoApp');
 var Item = require('./item/item');
 var SearchIndex = require('./index/ren_index');
+var Results = require('./index/searchResults');
 
 var routes = (
     <Route name='app' handler={App} path='/'>
@@ -32,6 +33,7 @@ var routes = (
         <Route path="repo/:RepoID" handler={Repo} />{/* the path of this is '/#/repo' */}
         <Route path="item/:ItemID" handler={Item} />
         <Route path='start' name='search_index' handler={SearchIndex}></Route>
+        <Route path="search/results" handler={Results}></Route>
     </Route>
 );
 
